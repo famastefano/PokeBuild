@@ -1,0 +1,3 @@
+﻿[*.cs]
+dotnet_diagnostic.VSEXTPREVIEW_OUTPUTWINDOW.severity = none
+dotnet_diagnostic.VSEXTPREVIEW_LSP.severity = none
