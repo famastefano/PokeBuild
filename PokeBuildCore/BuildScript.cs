@@ -1,14 +1,14 @@
-﻿using PokeBuildCore.Logging;
-
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using PokeBuildCore.Exceptions;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace PokeBuildCore
 {
     public class BuildScriptOptions
     {
-        public IPokeBuildLogger Logger { get; set; }
+        public ILogger Logger { get; set; }
         public string RootDir { get; set; }
         public string ModuleDir { get; set; }
         public BuildScript.Configurations Configuration { get; set; }
@@ -143,7 +143,7 @@ namespace PokeBuildCore
 
         public string ModuleName => Path.GetDirectoryName(ModuleDir);
 
-        public readonly IPokeBuildLogger Logger;
+        public readonly ILogger Logger;
 
         /// <summary>
         /// List of Modules we need for our public headers, but won't link against.
@@ -227,15 +227,11 @@ namespace PokeBuildCore
                 Configurations.Development or Configurations.Shipping => Optimizations.Enabled,
                 _ => throw new BuildConfigurationException($"Invalid configuration {Configuration}"),
             };
-
-            Logger.Log(LogLevel.Information, "Module {Module} initialized.", ModuleName);
         }
 
-        public abstract void Configure();
-
-        public void Validate()
+        public void Configure()
         {
-
+            Logger.LogInformation("Configuring {Module}", ModuleName);
         }
 
         public void PostConfigure()

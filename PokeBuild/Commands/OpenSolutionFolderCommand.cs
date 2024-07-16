@@ -1,20 +1,13 @@
-﻿using Microsoft.VisualStudio.Extensibility;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.Extensibility;
 using Microsoft.VisualStudio.Extensibility.Commands;
-using Microsoft.VisualStudio.Extensibility.Shell;
 using Microsoft.VisualStudio.Extensibility.Shell.FileDialog;
 
-using PokeBuildExtension;
-using PokeBuildExtension.Logging;
-
 namespace PokeBuildExtension.Commands;
-/// <summary>
-/// Command1 handler.
-/// </summary>
+
 [VisualStudioContribution]
 internal class OpenSolutionFolderCommand : Command
 {
-    private readonly IPokeBuildLogger logger = Globals.Singletons.Logger;
-
     public override CommandConfiguration CommandConfiguration => new("%PokeBuild.Commands.OpenSolutionFolder%")
     {
         Icon = new(ImageMoniker.KnownValues.OpenProjectFolder, IconSettings.IconAndText),
@@ -27,6 +20,8 @@ internal class OpenSolutionFolderCommand : Command
 
     public override async Task ExecuteCommandAsync(IClientContext context, CancellationToken cancellationToken)
     {
+        var logger = await Logging.OutputWindowLogger.MakeLoggerAsync(context, cancellationToken);
+
         string? folder = await context.Extensibility.Shell().ShowOpenFolderDialogAsync(new FolderDialogOptions
         {
             Title = "Open PokeEngine Solution"
@@ -34,7 +29,7 @@ internal class OpenSolutionFolderCommand : Command
 
         if (folder is not null)
         {
-
+            logger.LogInformation("Opening solution folder `{Folder}`", folder);
         }
     }
 }
