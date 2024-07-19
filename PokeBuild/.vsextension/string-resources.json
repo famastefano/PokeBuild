@@ -1,4 +1,5 @@
 {
     "PokeBuild.MainMenu.Title": "Poke Build",
-    "PokeBuild.Commands.OpenSolutionFolder": "Open Solution Folder"
+    "PokeBuild.Commands.OpenSolutionFolder": "Open Solution Folder",
+    "PokeBuild.LSP.DisplayName": "PokeBuild Module BuildScript LSP"
 }
