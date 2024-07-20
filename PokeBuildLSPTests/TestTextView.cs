@@ -13,7 +13,7 @@ public class TestTextView
 
     private static TextView CreateView() => new(BLOCK_SIZE);
 
-    private Random r;
+    private Random rnd = default!;
 
     [TestInitialize]
     public void Init()
@@ -22,7 +22,7 @@ public class TestTextView
         int seed = debugSeed == 0 ? Random.Shared.Next() : debugSeed;
         System.Diagnostics.Debug.WriteLine($"Seed: {seed}");
         Console.WriteLine($"Seed: {seed}");
-        this.r = new Random(seed);
+        rnd = new Random(seed);
     }
 
     [TestMethod]
@@ -43,7 +43,7 @@ public class TestTextView
     [TestMethod]
     public void ReplacingDocument_MakesLengthEqualToContent()
     {
-        string content = RandomString(this.r.Next(1, BLOCK_SIZE * 4));
+        string content = RandomString(rnd.Next(1, BLOCK_SIZE * 4));
 
         var view = CreateView();
         view.ReplaceDocument(content);
@@ -53,7 +53,7 @@ public class TestTextView
     [TestMethod]
     public void ReplacingDocument_MakesSpanEqualToContent()
     {
-        string content = RandomString(this.r.Next(1, BLOCK_SIZE * 4));
+        string content = RandomString(rnd.Next(1, BLOCK_SIZE * 4));
 
         var view = CreateView();
         var actual = new string(view.ReplaceDocument(content).AsSpan());
@@ -63,7 +63,7 @@ public class TestTextView
     [TestMethod]
     public void ReplacingDocument_MakesCapacityGrowIfRequired()
     {
-        string content = RandomString(this.r.Next(BLOCK_SIZE * 2, BLOCK_SIZE * 4));
+        string content = RandomString(rnd.Next(BLOCK_SIZE * 2, BLOCK_SIZE * 4));
 
         var view = CreateView();
         Assert.IsTrue(view.Capacity <= content.Length);
@@ -98,9 +98,9 @@ public class TestTextView
     public void Update_WithNoRangeSimplyReplacesTheDocument()
     {
         var view = CreateView();
-        for(int i = 0; i < 5; ++i)
+        for (int i = 0; i < 5; ++i)
         {
-            string content = RandomString(this.r.Next(BLOCK_SIZE, BLOCK_SIZE*4));
+            string content = RandomString(rnd.Next(BLOCK_SIZE, BLOCK_SIZE * 4));
             view.UpdateDocument(content, null);
 
             string cpy = new(view.AsSpan());
@@ -111,24 +111,46 @@ public class TestTextView
     [TestMethod]
     public void Update_WithNoContentDeletesTheSpecifiedRange()
     {
-        string content = RandomString(this.r.Next(BLOCK_SIZE, BLOCK_SIZE * 4));
+        string content = RandomString(rnd.Next(BLOCK_SIZE, BLOCK_SIZE * 4));
 
         var view = CreateView();
         view.ReplaceDocument(content);
 
-        int start = this.r.Next(0, content.Length / 2 - 1);
-        int end = this.r.Next(start + 1, content.Length - 1);
+        int start = rnd.Next(0, content.Length / 2 - 1);
+        int end = rnd.Next(start + 1, content.Length - 1);
 
         Range r = new(1, start, 1, end);
         view.UpdateDocument(null, r);
 
-        string expected = content[..start] + content[(end+1)..];
+        string expected = content[..start] + content[(end + 1)..];
         string actual = new(view.AsSpan());
         Assert.AreEqual(expected, actual);
     }
 
-    // 8.  Update       with no content, deletes data in the range
-    // 9.  Update       with both, replaces data in the range
+    [TestMethod]
+    public void Update_WithBothContentAndRangeReplacesData()
+    {
+        string content = RandomString(rnd.Next(BLOCK_SIZE, BLOCK_SIZE * 4));
+
+        var view = CreateView();
+        view.ReplaceDocument(content);
+
+        int start = rnd.Next(0, content.Length / 2 - 1);
+        int end = rnd.Next(start + 1, content.Length - 1);
+
+        string replacedBy = RandomString(end - start);
+
+        Range r = new(1, start, 1, end);
+        view.UpdateDocument(replacedBy, r);
+
+        var expectedArr = content.ToCharArray();
+        for (int i = start; i < end; ++i)
+            expectedArr[i] = replacedBy[i - start];
+        string expected = new(expectedArr);
+        string actual = new(view.AsSpan());
+        Assert.AreEqual(expected, actual);
+    }
+
     // 10. DeleteRange  deletes data in the range
     //                   a. Range.len = 0
     //                   b. Range.len = Length
@@ -145,7 +167,7 @@ public class TestTextView
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         return new string(Enumerable.Repeat(chars, length)
-            .Select(s => s[this.r.Next(s.Length)]).ToArray());
+            .Select(s => s[rnd.Next(s.Length)]).ToArray());
     }
 
     private string RandomStringWithNewlines(int length, int lines)
@@ -153,7 +175,7 @@ public class TestTextView
         StringBuilder s = new(RandomString(length));
         for (int i = 0; i < lines; ++i)
         {
-            s[this.r.Next(s.Length)] = '\n';
+            s[rnd.Next(s.Length)] = '\n';
         }
         return s.ToString();
     }
