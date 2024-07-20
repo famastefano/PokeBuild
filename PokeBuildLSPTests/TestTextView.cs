@@ -151,10 +151,27 @@ public class TestTextView
         Assert.AreEqual(expected, actual);
     }
 
-    // 10. DeleteRange  deletes data in the range
-    //                   a. Range.len = 0
-    //                   b. Range.len = Length
-    //                   c. Range.len = X
+    [TestMethod]
+    public void DeleteRange_RangeWithSingleCharacterOnlyRemovesThatCharacter()
+    {
+        string content = RandomString(rnd.Next(BLOCK_SIZE, BLOCK_SIZE * 4));
+        var view = CreateView();
+        view.ReplaceDocument(content);
+        view.DeleteRange(new(0, 0, 0, 0));
+        var span = view.AsSpan();
+        Assert.AreEqual(content[1..], new(span));
+    }
+
+    [TestMethod]
+    public void DeleteRange_RangeThatSpansEntireContentDeletesEntireDocument()
+    {
+        string content = RandomString(rnd.Next(BLOCK_SIZE, BLOCK_SIZE * 4));
+        var view = CreateView();
+        view.ReplaceDocument(content);
+        view.DeleteRange(new(0, 0, 0, view.Length));
+        Assert.IsTrue(view.AsSpan().IsEmpty);
+    }
+
     // 11. ReplaceRange replaces data in the range
     //                   a. Range.len = 0      -> shall behave like Insert
     //                   b. Range.len = Length -> shall behave like Append
