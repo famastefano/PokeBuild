@@ -8,6 +8,15 @@ namespace PokeBuildCore
 {
     public class BuildScriptOptions
     {
+        public BuildScriptOptions(ILogger logger, string rootDir, string moduleDir, BuildScript.Configurations configuration, bool isEngineModule)
+        {
+            Logger = logger;
+            RootDir = rootDir;
+            ModuleDir = moduleDir;
+            Configuration = configuration;
+            IsEngineModule = isEngineModule;
+        }
+
         public ILogger Logger { get; set; }
         public string RootDir { get; set; }
         public string ModuleDir { get; set; }
