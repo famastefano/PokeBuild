@@ -13,7 +13,7 @@ public class TestTextView
 
     private static TextView CreateView() => new(BLOCK_SIZE);
 
-    private Random rnd = default!;
+    private static Random rnd = default!;
 
     [TestInitialize]
     public void Init()
@@ -180,14 +180,14 @@ public class TestTextView
     //                   e. content.len == range.len
     //                   f. content.len <  range.len
 
-    private string RandomString(int length)
+    private static string RandomString(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         return new string(Enumerable.Repeat(chars, length)
             .Select(s => s[rnd.Next(s.Length)]).ToArray());
     }
 
-    private string RandomStringWithNewlines(int length, int lines)
+    private static string RandomStringWithNewlines(int length, int lines)
     {
         StringBuilder s = new(RandomString(length));
         for (int i = 0; i < lines; ++i)
