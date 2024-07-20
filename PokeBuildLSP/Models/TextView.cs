@@ -1,24 +1,20 @@
 ﻿using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
+using System.Collections;
+
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
 namespace PokeBuildLSP.Models;
 
-public class TextView
+public class TextView(int blockSize) : IEnumerable<LineView>
 {
     private char[] Content = [];
 
-    public int BlockSize { get; private set; }
+    public int BlockSize { get; private set; } = blockSize;
 
-    public int Length { get; private set; }
+    public int Length { get; private set; } = 0;
 
     public int Capacity => Content.Length;
-
-    public TextView(int blockSize)
-    {
-        BlockSize = blockSize;
-        Length = 0;
-    }
 
     public TextView ReplaceDocument(string content)
     {
@@ -132,13 +128,10 @@ public class TextView
     private int RoundToNextBlockSize(int length)
         => BlockSize * (int)Math.Ceiling((double)length / BlockSize);
 
-    /*
-     * 1. Replace content completely
-     * 2. Delete range
-     * 3. Replace range
-     * 4. Insert range
-     * 5. Expose as ReadOnlySpan<char>
-     * 6. Implement custom LineIterator that exposes each line as ReadonlySpan<char>
-     * 7. Need to add a Roslyn Compiler for parsing everything properly?
-     */
+    public IEnumerator<LineView> GetEnumerator()
+    {
+        return new TextViewEnumerator(this);
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

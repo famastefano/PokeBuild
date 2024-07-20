@@ -52,7 +52,7 @@ internal class BuildScriptLSP : LanguageServerProvider
                 PipeWriter.Create(process.StandardInput.BaseStream)));
         }
 
-        return Task.FromResult<IDuplexPipe?>(null);\
+        return Task.FromResult<IDuplexPipe?>(null);
     }
 
     public override Task OnServerInitializationResultAsync(ServerInitializationResult serverInitializationResult, LanguageServerInitializationFailureInfo? initializationFailureInfo, CancellationToken cancellationToken)
