@@ -91,8 +91,18 @@ public class TextView(int blockSize) : IEnumerable<LineView>
 
     private void DeleteRange(int from, int to)
     {
-        Array.Copy(Content, to, Content, from, Length - to);
-        Length -= to;
+        // Given a range j,k
+        // and an array 0-N
+        // to delete the range j,k we need to:
+        // 1. if |j,k| < N, shift left |j,k| positions from k+1
+        // 2. N -= |j,k|
+        int deleteLength = to - from + 1;
+        int shiftLength = Length - to - 1;
+        if (deleteLength < Length)
+            Array.Copy(Content, to + 1, Content, from, shiftLength);
+        Length -= deleteLength;
+        if (Length < 0)
+            Length = 0;
     }
 
     private int Map(Position p)
