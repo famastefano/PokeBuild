@@ -37,6 +37,9 @@ public class TextView(int blockSize) : IEnumerable<LineView>
         if (range is null)
             return ReplaceDocument(content!);
 
+        if (range!.Start == range!.End)
+            return InsertRange(content!, range!);
+
         return ReplaceRange(content!, range!);
     }
 
@@ -45,6 +48,25 @@ public class TextView(int blockSize) : IEnumerable<LineView>
         int from = Map(range.Start);
         int to = Map(range.End);
         DeleteRange(from, to);
+        return this;
+    }
+
+    public TextView InsertRange(string content, Range range)
+    {
+        int pos = Map(range.Start);
+        int newLength = Length + content.Length;
+        if (newLength > Capacity)
+        {
+            var buf = new char[RoundToNextBlockSize(newLength)];
+            Content.CopyTo(buf, 0);
+            Content = buf;
+        }
+
+        var rightSpan = Content.AsSpan()[pos..Length];
+        rightSpan.CopyTo(new Span<char>(Content, pos + content.Length, rightSpan.Length));
+        content.CopyTo(0, Content, pos, content.Length);
+
+        Length = newLength;
         return this;
     }
 

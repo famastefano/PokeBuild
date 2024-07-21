@@ -172,13 +172,54 @@ public class TestTextView
         Assert.IsTrue(view.AsSpan().IsEmpty);
     }
 
-    // 11. ReplaceRange replaces data in the range
-    //                   a. Range.len = 0      -> shall behave like Insert
-    //                   b. Range.len = Length -> shall behave like Append
-    //                   c. Range.len = X      -> shall behave like Replace
-    //                   d. content.len >  range.len
-    //                   e. content.len == range.len
-    //                   f. content.len <  range.len
+    [TestMethod]
+    public void InsertRange_Prepend()
+    {
+        string content = RandomString(rnd.Next(BLOCK_SIZE, BLOCK_SIZE * 4));
+        var view = CreateView();
+        view.ReplaceDocument(content);
+
+        string prepended = RandomString(rnd.Next(1, BLOCK_SIZE * 4));
+
+        view.InsertRange(prepended, new(0, 0, 0, 0));
+
+        var expected = prepended + content;
+        var actual = new string(view.AsSpan());
+        Assert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void InsertRange_Append()
+    {
+        string content = RandomString(rnd.Next(BLOCK_SIZE, BLOCK_SIZE * 4));
+        var view = CreateView();
+        view.ReplaceDocument(content);
+
+        string appended = RandomString(rnd.Next(1, BLOCK_SIZE * 4));
+
+        view.InsertRange(appended, new(0, view.Length, 0, view.Length));
+
+        var expected = content + appended;
+        var actual = new string(view.AsSpan());
+        Assert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void InsertRange_Middle()
+    {
+        string content = RandomString(rnd.Next(BLOCK_SIZE, BLOCK_SIZE * 4));
+        var view = CreateView();
+        view.ReplaceDocument(content);
+
+        string mid = RandomString(rnd.Next(1, BLOCK_SIZE * 4));
+        int pos = rnd.Next(1, content.Length - 1);
+
+        view.InsertRange(mid, new(0, pos, 0, pos));
+
+        var expected = content[..pos] + mid + content[pos..];
+        var actual = new string(view.AsSpan());
+        Assert.AreEqual(expected, actual);
+    }
 
     private static string RandomString(int length)
     {
