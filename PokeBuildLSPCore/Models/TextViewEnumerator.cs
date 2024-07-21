@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace PokeBuildLSP.Models;
+namespace PokeBuildLSPCore.Models;
 
 public class TextViewEnumerator(TextView text, int pos = 0) : IEnumerator<LineView>
 {

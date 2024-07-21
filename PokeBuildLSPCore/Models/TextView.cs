@@ -4,7 +4,7 @@ using System.Collections;
 
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
-namespace PokeBuildLSP.Models;
+namespace PokeBuildLSPCore.Models;
 
 public class TextView(int blockSize) : IEnumerable<LineView>
 {

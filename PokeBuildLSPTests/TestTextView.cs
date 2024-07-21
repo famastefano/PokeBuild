@@ -1,4 +1,4 @@
-using PokeBuildLSP.Models;
+using PokeBuildLSPCore.Models;
 
 using System.Text;
 

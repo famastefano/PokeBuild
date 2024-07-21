@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PokeBuildLSP.Models;
+namespace PokeBuildLSPCore.Models;
 public class LineView(TextView text, int start, int end)
 {
     private readonly TextView Text = text;
