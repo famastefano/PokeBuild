@@ -24,11 +24,17 @@ public class TestTextViewIterator
     }
 
     [TestMethod]
-    public void EmptyViewCantBeIteratedOver()
+    public void EmptyViewHasOneEmptyLine()
     {
         var view = CreateView();
+
+        int iterations = 0;
         foreach (var line in view)
-            Assert.Fail();
+        {
+            Assert.IsTrue(line.Line.IsEmpty);
+            if (++iterations > 1)
+                Assert.Fail();
+        }
     }
 
     [TestMethod]

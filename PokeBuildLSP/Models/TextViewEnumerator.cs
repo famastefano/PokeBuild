@@ -20,6 +20,8 @@ public class TextViewEnumerator(TextView text, int pos = 0) : IEnumerator<LineVi
 
     public bool MoveNext()
     {
+        if (Text is not null && Text.Length < Offset)
+            throw new InvalidOperationException();
         FindNextLine();
         return Length != -1;
     }
@@ -41,15 +43,20 @@ public class TextViewEnumerator(TextView text, int pos = 0) : IEnumerator<LineVi
 
         Offset += Length + 1;
         var span = Text.AsSpan();
-        if (span.IsEmpty || span.Length <= Offset)
+        if (span.IsEmpty || span.Length < Offset)
         {
             Length = -1;
-            return;
         }
-
-        span = span[Offset..];
-        Length = span.IndexOf('\n');
-        if (Length == -1)
-            Length = span.Length;
+        else if (Offset == span.Length)
+        {
+            Length = 0;
+        }
+        else
+        {
+            span = span[Offset..Text.Length];
+            Length = span.IndexOf('\n');
+            if (Length == -1)
+                Length = span.Length;
+        }
     }
 }
