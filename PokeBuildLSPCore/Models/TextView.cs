@@ -10,6 +10,8 @@ public class TextView(int blockSize) : IEnumerable<LineView>
 {
     private char[] Content = [];
 
+    public readonly ReaderWriterLockSlim RWLock = new();
+
     public int BlockSize { get; private set; } = blockSize;
 
     public int Length { get; private set; } = 0;
@@ -18,6 +20,8 @@ public class TextView(int blockSize) : IEnumerable<LineView>
 
     public TextView ReplaceDocument(string content)
     {
+        System.Diagnostics.Debug.Assert(RWLock.IsWriteLockHeld);
+
         if (Capacity < content.Length)
             Content = new char[RoundToNextBlockSize(content.Length)];
 
@@ -28,6 +32,8 @@ public class TextView(int blockSize) : IEnumerable<LineView>
 
     public TextView UpdateDocument(string? content, Range? range)
     {
+        System.Diagnostics.Debug.Assert(RWLock.IsWriteLockHeld);
+
         if (content is null && range is null)
             throw new ArgumentNullException(nameof(content) + ", " + nameof(range));
 
@@ -45,6 +51,8 @@ public class TextView(int blockSize) : IEnumerable<LineView>
 
     public TextView DeleteRange(Range range)
     {
+        System.Diagnostics.Debug.Assert(RWLock.IsWriteLockHeld);
+
         int from = Map(range.Start);
         int to = Map(range.End);
         DeleteRange(from, to);
@@ -53,6 +61,8 @@ public class TextView(int blockSize) : IEnumerable<LineView>
 
     public TextView InsertRange(string content, Range range)
     {
+        System.Diagnostics.Debug.Assert(RWLock.IsWriteLockHeld);
+
         int pos = Map(range.Start);
         int newLength = Length + content.Length;
         if (newLength > Capacity)
@@ -72,6 +82,8 @@ public class TextView(int blockSize) : IEnumerable<LineView>
 
     public TextView ReplaceRange(string content, Range range)
     {
+        System.Diagnostics.Debug.Assert(RWLock.IsWriteLockHeld);
+
         int from = Map(range.Start);
         int to = Map(range.End);
         int rangeLength = to - from;
@@ -162,6 +174,7 @@ public class TextView(int blockSize) : IEnumerable<LineView>
 
     public IEnumerator<LineView> GetEnumerator()
     {
+        System.Diagnostics.Debug.Assert(RWLock.IsWriteLockHeld || RWLock.IsUpgradeableReadLockHeld || RWLock.IsReadLockHeld);
         return new TextViewEnumerator(this);
     }
 
