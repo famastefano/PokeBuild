@@ -8,8 +8,9 @@ public class TextViewEnumerator(TextView text, int pos = 0) : IEnumerator<LineVi
     private readonly int InitialOffset = pos;
     private int Offset = 0;
     private int Length = -1;
+    private int Line = 0;
 
-    public LineView Current => new(Text!, Offset, Length);
+    public LineView Current => new(Text!, Offset, Length, Line);
     object IEnumerator.Current => Current;
 
     public void Dispose()
@@ -30,6 +31,7 @@ public class TextViewEnumerator(TextView text, int pos = 0) : IEnumerator<LineVi
     {
         Offset = InitialOffset;
         Length = -1;
+        Line = 0;
         FindNextLine();
     }
 
@@ -57,6 +59,7 @@ public class TextViewEnumerator(TextView text, int pos = 0) : IEnumerator<LineVi
             Length = span.IndexOf('\n');
             if (Length == -1)
                 Length = span.Length;
+            ++Line;
         }
     }
 }

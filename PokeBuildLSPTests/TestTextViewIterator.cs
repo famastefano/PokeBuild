@@ -31,7 +31,7 @@ public class TestTextViewIterator
         int iterations = 0;
         foreach (var line in view)
         {
-            Assert.IsTrue(line.Line.IsEmpty);
+            Assert.IsTrue(line.View.IsEmpty);
             if (++iterations > 1)
                 Assert.Fail();
         }
@@ -49,7 +49,7 @@ public class TestTextViewIterator
         foreach (var line in view)
         {
             string viewString = new(view.AsSpan());
-            string lineString = new(line.Line);
+            string lineString = new(line.View);
             Assert.AreEqual(viewString, lineString);
             ++iterations;
             if (iterations > 1)
