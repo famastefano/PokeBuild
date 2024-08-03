@@ -7,14 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="BuildScriptSchema.json" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="BuildScriptSchema.json" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     </ItemGroup>
 
