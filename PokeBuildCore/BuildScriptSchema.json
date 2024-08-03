@@ -1,0 +1,133 @@
+{
+    "$schema": "https://json-schema.org/draft-04/schema",
+    "$id": "https://poke-build/build-script-schema",
+    "title": "PokeBuild Module",
+    "type": "object",
+    "properties": {
+        "moduleName": {
+            "title": "Unique Module Name",
+            "type": "string"
+        },
+        "inherits": {
+            "title": "Inherits module definition from another .json file.",
+            "type": "string"
+        },
+        "isEngineModule": {
+            "title": "If this module shall be treated like an Engine Module",
+            "type": "boolean",
+            "default": false
+        },
+        "configurations": {
+            "title": "How the module is configured for each configuration",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "kind": {
+                        "title": "For which configuration the properties will be used",
+                        "type": "string",
+                        "enum": [ "Debug", "DebugGame", "Development", "Shipping" ]
+                    },
+                    "optimizations": {
+                        "title": "Force optimizations to be Enabled/Disabled or config default",
+                        "type": "string",
+                        "enum": [ "Enabled", "Disabled", "Auto" ],
+                        "default": "Auto"
+                    },
+                    "warnings": {
+                        "title": "Force warnings to be Disabled/Enabled (with reasonable maximum) or project default",
+                        "type": "string",
+                        "enum": [ "Disabled", "Maximum", "Auto" ],
+                        "default": "Default"
+                    },
+                    "type": {
+                        "title": "What kind of module it is.",
+                        "type": "string",
+                        "enum": [ "FileContainer", "Executable", "SharedLibrary", "StaticLibrary", "Header Only" ]
+                    },
+                    "tests": {
+                        "title": "If the module has tests, which runtime they require to run.",
+                        "type": "string",
+                        "enum": [ "None", "Standalone", "InEngine", "InGame" ],
+                        "default": "None"
+                    },
+                    "PublicIncludePathModuleNames": {
+                        "title": "Which modules are needed by other modules to use our headers.",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "PublicDependencyModuleNames": {
+                        "title": "Which modules are needed by other modules to links against us.",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "PrivateIncludePathModuleNames": {
+                        "title": "Which modules we need to use in our private headers.",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "PrivateDependencyModuleNames": {
+                        "title": "Which modules we'll link against.",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "PublicDefinitions": {
+                        "title": "Additional preprocessor definitions, automatically inherited by modules using us.",
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "key": { "type": "string" },
+                                    "value": { "type": "string" }
+                                },
+                                "required": [ "key", "value" ]
+                            },
+                            "minItems": 1
+                        }
+                    },
+                    "PrivateDefinitions": {
+                        "title": "Additional preprocessor definitions.",
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "key": { "type": "string" },
+                                    "value": { "type": "string" }
+                                },
+                                "required": [ "key", "value" ]
+                            },
+                            "minItems": 1
+                        }
+                    },
+                    "CompilerFlags": {
+                        "title": "Additional toolchain-specific compiler flags. Passed as-is to the compiler invocation.",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "LinkerFlags": {
+                        "title": "Additional toolchain-specific linker flags. Passed as-is to the linker invocation.",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "PublicForceDisabledWarnings": {
+                        "title": "Additional toolchain-specific warnings to forcibly disable. Inherited by other modules using us.",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    },
+                    "PrivateForceDisabledWarnings": {
+                        "title": "Additional toolchain-specific warnings to forcibly disable.",
+                        "type": "array",
+                        "items": { "type": "string" }
+                    }
+                },
+                "required": [ "kind", "type" ]
+            },
+            "minItems": 1
+        }
+    },
+    "required": [ "moduleName", "configurations" ]
+}

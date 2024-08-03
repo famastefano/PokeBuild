@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿#pragma warning disable VSEXTPREVIEW_OUTPUTWINDOW // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Extensibility;
 
 using System.IO;
@@ -34,3 +36,4 @@ internal class OutputWindowLogger : ILogger
         Writer.WriteLine($"{lvl}: {msg}");
     }
 }
+#pragma warning restore VSEXTPREVIEW_OUTPUTWINDOW // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
