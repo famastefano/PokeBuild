@@ -1,5 +1,5 @@
 {
-    "$schema": "https://json.schemastore.org/global.json",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
     "$id": "https://poke-build/build-script-schema",
     "title": "PokeBuild Module",
     "type": "object",
@@ -75,32 +75,24 @@
                         "title": "Additional preprocessor definitions, automatically inherited by modules using us.",
                         "type": "array",
                         "items": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "key": { "type": "string" },
-                                    "value": { "type": "string" }
-                                },
-                                "required": [ "key", "value" ]
+                            "type": "object",
+                            "properties": {
+                                "key": { "type": "string" },
+                                "value": { "type": "string" }
                             },
-                            "minItems": 1
+                            "required": [ "Key", "Value" ]
                         }
                     },
                     "PrivateDefinitions": {
                         "title": "Additional preprocessor definitions.",
                         "type": "array",
                         "items": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "key": { "type": "string" },
-                                    "value": { "type": "string" }
-                                },
-                                "required": [ "key", "value" ]
+                            "type": "object",
+                            "properties": {
+                                "key": { "type": "string" },
+                                "value": { "type": "string" }
                             },
-                            "minItems": 1
+                            "required": [ "Key", "Value" ]
                         }
                     },
                     "CompilerFlags": {
@@ -124,10 +116,10 @@
                         "items": { "type": "string" }
                     }
                 },
-                "required": [ "kind", "type" ]
+                "required": [ "Kind", "Type" ]
             },
             "minItems": 1
         }
     },
-    "required": [ "moduleName", "configurations" ]
+    "required": [ "ModuleName", "Configurations" ]
 }

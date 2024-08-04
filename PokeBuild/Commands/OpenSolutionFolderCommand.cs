@@ -52,10 +52,10 @@ internal class OpenSolutionFolderCommand : Command
         JSchema moduleSchema = await GetModuleSchemaAsync();
         foreach (string file in configFiles)
         {
-            ModuleConfiguration? config = TryParseModule(File.ReadAllText(file), moduleSchema, out string[] errors);
+            ModuleConfiguration? config = TryParseModule(file, moduleSchema, out string[] errors);
             if (errors.Length != 0)
             {
-                logger.LogError($"Module {file} contains configuration errors:\n{string.Join("\n", errors)}");
+                logger.LogError($"Module {file} contains configuration errors:\n\t{string.Join("\n\t", errors)}");
             }
             else if (config is null)
             {
@@ -68,17 +68,17 @@ internal class OpenSolutionFolderCommand : Command
         }
     }
 
-    private ModuleConfiguration? TryParseModule(string json, JSchema schema, out string[] validationErrors)
+    private ModuleConfiguration? TryParseModule(string file, JSchema schema, out string[] validationErrors)
     {
-        JsonTextReader reader = new(new StringReader(json));
-        JSchemaValidatingReader validatingReader = new(reader)
+        using StreamReader s = File.OpenText(file);
+        using JSchemaValidatingReader reader = new(new JsonTextReader(s))
         {
             Schema = schema
         };
         IList<string> messages = [];
-        validatingReader.ValidationEventHandler += (o, a) => messages.Add(a.Message);
+        reader.ValidationEventHandler += (o, a) => messages.Add(a.Message);
         JsonSerializer serializer = new();
-        ModuleConfiguration? module = serializer.Deserialize<ModuleConfiguration>(validatingReader);
+        ModuleConfiguration? module = serializer.Deserialize<ModuleConfiguration>(reader);
         validationErrors = [.. messages];
         return module;
     }
