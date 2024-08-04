@@ -1,5 +1,5 @@
 {
-    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$schema": "https://json-schema.org/draft-04/schema",
     "$id": "https://poke-build/build-script-schema",
     "title": "PokeBuild Module",
     "type": "object",
@@ -23,27 +23,26 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "Kind": {
-                        "title": "For which configuration the properties will be used",
+                    "Name": {
+                        "title": "Identifies this config with a name. Used in IDE and command line when building.",
                         "type": "string",
-                        "enum": [ "Debug", "DebugGame", "Development", "Shipping" ]
+                        "minLength": 3
+                    },
+                    "Type": {
+                        "title": "What kind of module it is.",
+                        "type": "string",
+                        "enum": [ "FileContainer", "Executable", "SharedLibrary", "StaticLibrary" ]
                     },
                     "Optimizations": {
                         "title": "Force optimizations to be Enabled/Disabled or config default",
                         "type": "string",
-                        "enum": [ "Enabled", "Disabled", "Auto" ],
-                        "default": "Auto"
+                        "enum": [ "Enabled", "Disabled" ]
                     },
                     "Warnings": {
                         "title": "Force warnings to be Disabled/Enabled (with reasonable maximum) or project default",
                         "type": "string",
                         "enum": [ "Disabled", "Maximum", "Auto" ],
-                        "default": "Default"
-                    },
-                    "Type": {
-                        "title": "What kind of module it is.",
-                        "type": "string",
-                        "enum": [ "FileContainer", "Executable", "SharedLibrary", "StaticLibrary", "Header Only" ]
+                        "default": "Auto"
                     },
                     "Tests": {
                         "title": "If the module has tests, which runtime they require to run.",
@@ -116,7 +115,7 @@
                         "items": { "type": "string" }
                     }
                 },
-                "required": [ "Kind", "Type" ]
+                "required": [ "Name", "Type", "Optimizations" ]
             },
             "minItems": 1
         }

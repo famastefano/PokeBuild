@@ -19,17 +19,8 @@ public class ModuleConfiguration
     public Configuration[] Configurations { get; set; }
 }
 
-public enum ConfigurationKind
-{
-    Debug,
-    DebugGame,
-    Development,
-    Shipping
-}
-
 public enum Optimizations
 {
-    Auto,
     Enabled,
     Disabled,
 }
@@ -47,7 +38,6 @@ public enum ModuleType
     Executable,
     SharedLibrary,
     StaticLibrary,
-    HeaderOnly,
 }
 
 public enum TestType
@@ -67,18 +57,18 @@ public class KeyValue
 public class Configuration
 {
     [JsonRequired]
-    [JsonConverter(typeof(StringEnumConverter))]
-    public ConfigurationKind Kind { get; set; }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public Optimizations Optimizations { get; set; } = Optimizations.Auto;
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public Warnings Warnings { get; set; } = Warnings.Auto;
+    public string Name { get; set; }
 
     [JsonRequired]
     [JsonConverter(typeof(StringEnumConverter))]
     public ModuleType Type { get; set; }
+
+    [JsonRequired]
+    [JsonConverter(typeof(StringEnumConverter))]
+    public Optimizations Optimizations { get; set; }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public Warnings Warnings { get; set; } = Warnings.Auto;
 
     [JsonConverter(typeof(StringEnumConverter))]
     public TestType Tests { get; set; } = TestType.None;
