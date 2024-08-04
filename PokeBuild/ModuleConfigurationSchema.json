@@ -1,51 +1,51 @@
 {
-    "$schema": "https://json-schema.org/draft-04/schema",
+    "$schema": "https://json.schemastore.org/global.json",
     "$id": "https://poke-build/build-script-schema",
     "title": "PokeBuild Module",
     "type": "object",
     "properties": {
-        "moduleName": {
+        "ModuleName": {
             "title": "Unique Module Name",
             "type": "string"
         },
-        "inherits": {
+        "Inherits": {
             "title": "Inherits module definition from another .json file.",
             "type": "string"
         },
-        "isEngineModule": {
+        "IsEngineModule": {
             "title": "If this module shall be treated like an Engine Module",
             "type": "boolean",
             "default": false
         },
-        "configurations": {
+        "Configurations": {
             "title": "How the module is configured for each configuration",
             "type": "array",
             "items": {
                 "type": "object",
                 "properties": {
-                    "kind": {
+                    "Kind": {
                         "title": "For which configuration the properties will be used",
                         "type": "string",
                         "enum": [ "Debug", "DebugGame", "Development", "Shipping" ]
                     },
-                    "optimizations": {
+                    "Optimizations": {
                         "title": "Force optimizations to be Enabled/Disabled or config default",
                         "type": "string",
                         "enum": [ "Enabled", "Disabled", "Auto" ],
                         "default": "Auto"
                     },
-                    "warnings": {
+                    "Warnings": {
                         "title": "Force warnings to be Disabled/Enabled (with reasonable maximum) or project default",
                         "type": "string",
                         "enum": [ "Disabled", "Maximum", "Auto" ],
                         "default": "Default"
                     },
-                    "type": {
+                    "Type": {
                         "title": "What kind of module it is.",
                         "type": "string",
                         "enum": [ "FileContainer", "Executable", "SharedLibrary", "StaticLibrary", "Header Only" ]
                     },
-                    "tests": {
+                    "Tests": {
                         "title": "If the module has tests, which runtime they require to run.",
                         "type": "string",
                         "enum": [ "None", "Standalone", "InEngine", "InGame" ],
