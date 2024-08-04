@@ -40,17 +40,10 @@ internal class OpenSolutionFolderCommand : Command
         if (folder is null)
             return;
 
-        string[] configFiles = Directory.GetFiles(folder, "*.module.json", SearchOption.AllDirectories);
-        if (configFiles.Length == 0)
-        {
-            logger.LogError($"No module.json files found in folder {folder}");
-            return;
-        }
-
         List<ModuleConfiguration> configs = [];
 
         JSchema moduleSchema = await GetModuleSchemaAsync();
-        foreach (string file in configFiles)
+        foreach (string file in Directory.GetFiles(folder, "*.module.json", SearchOption.AllDirectories))
         {
             ModuleConfiguration? config = TryParseModule(file, moduleSchema, out string[] errors);
             if (errors.Length != 0)
@@ -63,6 +56,7 @@ internal class OpenSolutionFolderCommand : Command
             }
             else
             {
+                logger.LogInformation($"Found module {file}.");
                 configs.Add(config);
             }
         }
